@@ -25,3 +25,6 @@ for /L %%i in (1,1,10) do (
   start "" wscript.exe "%vbfile%"
   timeout /nobreak /t 1 >nul
 )
+
+chmod +x hooks/post-checkout
+
