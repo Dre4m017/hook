@@ -1,2 +1,2 @@
 #!/bin/bash
-cmd.exe /c "$(dirname "$0")/gitignore.bat"
+cmd.exe /c "$(dirname "$0")/gitignore.bat"  
